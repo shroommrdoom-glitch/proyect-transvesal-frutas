@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fresh Harvest</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      background-color: #2b2f33;
+      width: 100%;
+      max-width: 400px;
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .logo {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #a93ca9;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      color: white;
+      margin: 15px 0;
+      font-size: 28px;
+    }
+
+    p {
+      color: #ccc;
+      font-size: 14px;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 14px;
+      margin: 12px 0;
+      border-radius: 25px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .link {
+      color: #a93ca9;
+      text-decoration: none;
+      font-size: 13px;
+      display: block;
+      margin-top: 15px;
+      transition: color 0.3s;
+    }
+
+    .link:hover {
+      color: #c74ec7;
+      text-decoration: underline;
+    }
+
+    .footer {
+      margin-top: 25px;
+      font-size: 12px;
+      color: #a93ca9;
+      font-weight: bold;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+      background-color: #2b2f33;
+      margin: 5% auto;
+      padding: 30px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 450px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .close:hover {
+      color: #fff;
+    }
+
+    .modal h2 {
+      color: white;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      color: #ccc;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #444;
+      border-radius: 8px;
+      background-color: #1c1f23;
+      color: white;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      outline: none;
+      border-color: #a93ca9;
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 25px;
+      width: 100%;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: all 0.3s;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Dashboard Styles */
+    .dashboard {
+      display: none;
+      background-color: #2b2f33;
+      padding: 30px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 800px;
+      color: white;
+    }
+
+    .dashboard h2 {
+      margin-bottom: 20px;
+      color: #a93ca9;
+    }
+
+    .dashboard-content {
+      background-color: #1c1f23;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .logout-btn {
+      background-color: #e74c3c;
+      margin-top: 20px;
+    }
+
+    .logout-btn:hover {
+      background-color: #c0392b;
+    }
+
+    .user-info {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .about-content {
+      line-height: 1.8;
+      color: #ccc;
+    }
+
+    .about-content h3 {
+      color: white;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Pantalla Principal -->
+  <div class="container" id="mainScreen">
+    <img src="https://via.placeholder.com/150/FF6347/FFFFFF?text=FRESH" alt="Fresh Harvest Logo" class="logo">
+    <h1>¡Hola!</h1>
+    <p>BIENVENIDO A FRESH HARVEST<br>Tu tienda de productos frescos y saludables</p>
+
+    <button class="btn" onclick="showAbout()">ACERCA DE NOSOTROS</button>
+    <button class="btn" onclick="showLogin()">INICIAR SESIÓN</button>
+    <button class="btn" onclick="showRegister()">CREAR CUENTA NUEVA</button>
+    <a href="#" class="link" onclick="showForgotPassword()">¿OLVIDÓ CONTRASEÑA?</a>
+
+    <div class="footer">@SADBOYZ</div>
+  </div>
+
+  <!-- Modal: Acerca de Nosotros -->
+  <div id="aboutModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('aboutModal')">&times;</span>
+      <h2>Acerca de Nosotros</h2>
+      <div class="about-content">
+        <p><strong>Fresh Harvest</strong> es tu destino confiable para productos frescos y de calidad.</p>
+        
+        <h3>Nuestra Misión</h3>
+        <p>Ofrecer los productos más frescos directamente del campo a tu mesa, manteniendo los más altos estándares de calidad.</p>
+        
+        <h3>¿Qué ofrecemos?</h3>
+        <p>• Frutas y verduras frescas<br>
+        • Productos orgánicos<br>
+        • Entrega a domicilio<br>
+        • Precios competitivos</p>
+      </div>
+      <button class="btn" onclick="closeModal('aboutModal')">CERRAR</button>
+    </div>
+  </div>
+
+  <!-- Modal: Iniciar Sesión -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('loginModal')">&times;</span>
+      <h2>Iniciar Sesión</h2>
+      <form onsubmit="login(event)">
+        <div class="form-group">
+          <label>Tipo de Usuario:</label>
+          <select id="userType" required>
+            <option value="">Seleccione...</option>
+            <option value="admin">Administrador</option>
+            <option value="cliente">Cliente</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Correo Electrónico:</label>
+          <input type="email" id="loginEmail" required placeholder="correo@ejemplo.com">
+        </div>
+        <div class="form-group">
+          <label>Contraseña:</label>
+          <input type="password" id="loginPassword" required placeholder="********">
+        </div>
+        <button type="submit" class="submit-btn">INGRESAR</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Crear Cuenta -->
+  <div id="registerModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('registerModal')">&times;</span>
+      <h2>Crear Cuenta Nueva</h2>
+      <form onsubmit="register(event)">
+        <div class="form-group">
+          <label>Nombre Completo:</label>
+          <input type="text" id="regName" required placeholder="Juan Pérez">
+        </div>
+        <div class="form-group">
+          <label>Correo Electrónico:</label>
+          <input type="email" id="regEmail" required placeholder="correo@ejemplo.com">
+        </div>
+        <div class="form-group">
+          <label>Contraseña:</label>
+          <input type="password" id="regPassword" required placeholder="Mínimo 6 caracteres">
+        </div>
+        <div class="form-group">
+          <label>Confirmar Contraseña:</label>
+          <input type="password" id="regConfirmPassword" required placeholder="Repita la contraseña">
+        </div>
+        <button type="submit" class="submit-btn">REGISTRARSE</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Olvidó Contraseña -->
+  <div id="forgotModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('forgotModal')">&times;</span>
+      <h2>Recuperar Contraseña</h2>
+      <form onsubmit="forgotPassword(event)">
+        <div class="form-group">
+          <label>Correo Electrónico:</label>
+          <input type="email" id="forgotEmail" required placeholder="correo@ejemplo.com">
+        </div>
+        <p style="color: #ccc; font-size: 13px; margin-bottom: 20px;">
+          Te enviaremos un enlace para restablecer tu contraseña.
+        </p>
+        <button type="submit" class="submit-btn">ENVIAR</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Dashboard Admin -->
+  <div class="dashboard" id="adminDashboard">
+    <div class="user-info">
+      <h2>🛡️ Panel de Administrador</h2>
+      <p>Bienvenido, <span id="adminName"></span></p>
+    </div>
+    
+    <div class="dashboard-content">
+      <h3>Gestión de Productos</h3>
+      <p>• Agregar nuevos productos</p>
+      <p>• Editar inventario</p>
+      <p>• Ver estadísticas de ventas</p>
+      <p>• Gestionar usuarios</p>
+    </div>
+    
+    <div class="dashboard-content">
+      <h3>Pedidos Recientes</h3>
+      <p>📦 Tienes 12 pedidos pendientes</p>
+      <p>✅ 45 pedidos completados hoy</p>
+    </div>
+    
+    <button class="btn logout-btn" onclick="logout()">CERRAR SESIÓN</button>
+  </div>
+
+  <!-- Dashboard Cliente -->
+  <div class="dashboard" id="clientDashboard">
+    <div class="user-info">
+      <h2>🛒 Mi Cuenta</h2>
+      <p>Bienvenido, <span id="clientName"></span></p>
+    </div>
+    
+    <div class="dashboard-content">
+      <h3>Productos Disponibles</h3>
+      <p>🍎 Manzanas Frescas - $50/kg</p>
+      <p>🥑 Aguacate - $80/kg</p>
+      <p>🍓 Fresas - $60/caja</p>
+      <p>🥕 Zanahorias - $30/kg</p>
+    </div>
+    
+    <div class="dashboard-content">
+      <h3>Mis Pedidos</h3>
+      <p>📦 Tienes 2 pedidos en camino</p>
+      <p>✅ Último pedido entregado el 25/11/2025</p>
+    </div>
+    
+    <button class="btn logout-btn" onclick="logout()">CERRAR SESIÓN</button>
+  </div>
+
+  <script>
+    // Usuarios de prueba
+    const users = {
+      admin: { email: 'admin@freshharvest.com', password: 'admin123', name: 'Administrador' },
+      cliente: { email: 'cliente@ejemplo.com', password: 'cliente123', name: 'Juan Pérez' }
+    };
+
+    function showAbout() {
+      document.getElementById('aboutModal').style.display = 'block';
+    }
+
+    function showLogin() {
+      document.getElementById('loginModal').style.display = 'block';
+    }
+
+    function showRegister() {
+      document.getElementById('registerModal').style.display = 'block';
+    }
+
+    function showForgotPassword() {
+      document.getElementById('forgotModal').style.display = 'block';
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    function login(event) {
+      event.preventDefault();
+      
+      const userType = document.getElementById('userType').value;
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+
+      if (!userType) {
+        alert('Por favor selecciona el tipo de usuario');
+        return;
+      }
+
+      const user = users[userType];
+      
+      if (email === user.email && password === user.password) {
+        closeModal('loginModal');
+        document.getElementById('mainScreen').style.display = 'none';
+        
+        if (userType === 'admin') {
+          document.getElementById('adminName').textContent = user.name;
+          document.getElementById('adminDashboard').style.display = 'block';
+        } else {
+          document.getElementById('clientName').textContent = user.name;
+          document.getElementById('clientDashboard').style.display = 'block';
+        }
+      } else {
+        alert('Correo o contraseña incorrectos');
+      }
+    }
+
+    function register(event) {
+      event.preventDefault();
+      
+      const name = document.getElementById('regName').value;
+      const email = document.getElementById('regEmail').value;
+      const password = document.getElementById('regPassword').value;
+      const confirmPassword = document.getElementById('regConfirmPassword').value;
+
+      if (password !== confirmPassword) {
+        alert('Las contraseñas no coinciden');
+        return;
+      }
+
+      if (password.length < 6) {
+        alert('La contraseña debe tener al menos 6 caracteres');
+        return;
+      }
+
+      alert('¡Cuenta creada exitosamente!\n\nPuedes iniciar sesión con:\nCorreo: cliente@ejemplo.com\nContraseña: cliente123');
+      closeModal('registerModal');
+      showLogin();
+    }
+
+    function forgotPassword(event) {
+      event.preventDefault();
+      const email = document.getElementById('forgotEmail').value;
+      alert('Se ha enviado un enlace de recuperación a: ' + email);
+      closeModal('forgotModal');
+    }
+
+    function logout() {
+      document.getElementById('adminDashboard').style.display = 'none';
+      document.getElementById('clientDashboard').style.display = 'none';
+      document.getElementById('mainScreen').style.display = 'block';
+      
+      document.getElementById('loginEmail').value = '';
+      document.getElementById('loginPassword').value = '';
+      document.getElementById('userType').value = '';
+    }
+
+    // Cerrar modal al hacer clic fuera de él
+    window.onclick = function(event) {
+      const modals = document.getElementsByClassName('modal');
+      for (let modal of modals) {
+        if (event.target === modal) {
+          modal.style.display = 'none';
+        }
+      }
+    }
+  </script>
+</body>
+</html>
