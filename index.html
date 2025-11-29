@@ -75,8 +75,9 @@
       box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
     }
 
-    .btn:active {
-      transform: translateY(0);
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     .link {
@@ -86,6 +87,7 @@
       display: block;
       margin-top: 15px;
       transition: color 0.3s;
+      cursor: pointer;
     }
 
     .link:hover {
@@ -100,7 +102,6 @@
       font-weight: bold;
     }
 
-    /* Modal Styles */
     .modal {
       display: none;
       position: fixed;
@@ -196,12 +197,33 @@
       transition: all 0.3s;
     }
 
-    .submit-btn:hover {
+    .submit-btn:hover:not(:disabled) {
       transform: translateY(-2px);
       box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
     }
 
-    /* Dashboard Styles */
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .alert {
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .alert-error {
+      background-color: #e74c3c;
+      color: white;
+    }
+
+    .alert-success {
+      background-color: #27ae60;
+      color: white;
+    }
+
     .dashboard {
       display: none;
       background-color: #2b2f33;
@@ -239,17 +261,6 @@
       border-radius: 10px;
       margin-bottom: 20px;
     }
-
-    .about-content {
-      line-height: 1.8;
-      color: #ccc;
-    }
-
-    .about-content h3 {
-      color: white;
-      margin-top: 20px;
-      margin-bottom: 10px;
-    }
   </style>
 </head>
 <body>
@@ -262,7 +273,7 @@
     <button class="btn" onclick="showAbout()">ACERCA DE NOSOTROS</button>
     <button class="btn" onclick="showLogin()">INICIAR SESIÓN</button>
     <button class="btn" onclick="showRegister()">CREAR CUENTA NUEVA</button>
-    <a href="#" class="link" onclick="showForgotPassword()">¿OLVIDÓ CONTRASEÑA?</a>
+    <a class="link" onclick="showForgotPassword()">¿OLVIDÓ CONTRASEÑA?</a>
 
     <div class="footer">@SADBOYZ</div>
   </div>
@@ -272,17 +283,15 @@
     <div class="modal-content">
       <span class="close" onclick="closeModal('aboutModal')">&times;</span>
       <h2>Acerca de Nosotros</h2>
-      <div class="about-content">
+      <div style="line-height: 1.8; color: #ccc;">
         <p><strong>Fresh Harvest</strong> es tu destino confiable para productos frescos y de calidad.</p>
-        
-        <h3>Nuestra Misión</h3>
-        <p>Ofrecer los productos más frescos directamente del campo a tu mesa, manteniendo los más altos estándares de calidad.</p>
-        
-        <h3>¿Qué ofrecemos?</h3>
-        <p>• Frutas y verduras frescas<br>
-        • Productos orgánicos<br>
+        <h3 style="color: white; margin-top: 20px;">Nuestra Misión</h3>
+        <p>Ofrecer los productos más frescos directamente del campo a tu mesa.</p>
+        <h3 style="color: white; margin-top: 20px;">¿Qué ofrecemos?</h3>
+        <p>• Frutas frescas de la región<br>
+        • Productos criollos<br>
         • Entrega a domicilio<br>
-        • Precios competitivos</p>
+        • Precios justos</p>
       </div>
       <button class="btn" onclick="closeModal('aboutModal')">CERRAR</button>
     </div>
@@ -293,7 +302,8 @@
     <div class="modal-content">
       <span class="close" onclick="closeModal('loginModal')">&times;</span>
       <h2>Iniciar Sesión</h2>
-      <form onsubmit="login(event)">
+      <div id="loginAlert" class="alert"></div>
+      <form id="loginForm" onsubmit="login(event)">
         <div class="form-group">
           <label>Tipo de Usuario:</label>
           <select id="userType" required>
@@ -310,8 +320,13 @@
           <label>Contraseña:</label>
           <input type="password" id="loginPassword" required placeholder="********">
         </div>
-        <button type="submit" class="submit-btn">INGRESAR</button>
+        <button type="submit" class="submit-btn" id="loginBtn">INGRESAR</button>
       </form>
+      <p style="color: #ccc; font-size: 12px; margin-top: 15px;">
+        <strong>Usuarios de prueba:</strong><br>
+        Admin: admin@freshharvest.com / admin123<br>
+        Cliente: cliente@ejemplo.com / cliente123
+      </p>
     </div>
   </div>
 
@@ -320,7 +335,8 @@
     <div class="modal-content">
       <span class="close" onclick="closeModal('registerModal')">&times;</span>
       <h2>Crear Cuenta Nueva</h2>
-      <form onsubmit="register(event)">
+      <div id="registerAlert" class="alert"></div>
+      <form id="registerForm" onsubmit="register(event)">
         <div class="form-group">
           <label>Nombre Completo:</label>
           <input type="text" id="regName" required placeholder="Juan Pérez">
@@ -330,6 +346,10 @@
           <input type="email" id="regEmail" required placeholder="correo@ejemplo.com">
         </div>
         <div class="form-group">
+          <label>Teléfono (opcional):</label>
+          <input type="tel" id="regTelefono" placeholder="5512345678">
+        </div>
+        <div class="form-group">
           <label>Contraseña:</label>
           <input type="password" id="regPassword" required placeholder="Mínimo 6 caracteres">
         </div>
@@ -337,7 +357,7 @@
           <label>Confirmar Contraseña:</label>
           <input type="password" id="regConfirmPassword" required placeholder="Repita la contraseña">
         </div>
-        <button type="submit" class="submit-btn">REGISTRARSE</button>
+        <button type="submit" class="submit-btn" id="registerBtn">REGISTRARSE</button>
       </form>
     </div>
   </div>
@@ -347,6 +367,7 @@
     <div class="modal-content">
       <span class="close" onclick="closeModal('forgotModal')">&times;</span>
       <h2>Recuperar Contraseña</h2>
+      <div id="forgotAlert" class="alert"></div>
       <form onsubmit="forgotPassword(event)">
         <div class="form-group">
           <label>Correo Electrónico:</label>
@@ -369,16 +390,16 @@
     
     <div class="dashboard-content">
       <h3>Gestión de Productos</h3>
-      <p>• Agregar nuevos productos</p>
-      <p>• Editar inventario</p>
+      <p>• Agregar nuevos lotes</p>
+      <p>• Editar frutas disponibles</p>
       <p>• Ver estadísticas de ventas</p>
-      <p>• Gestionar usuarios</p>
+      <p>• Gestionar productores</p>
     </div>
     
     <div class="dashboard-content">
       <h3>Pedidos Recientes</h3>
-      <p>📦 Tienes 12 pedidos pendientes</p>
-      <p>✅ 45 pedidos completados hoy</p>
+      <p>📦 Tienes pedidos pendientes</p>
+      <p>✅ Pedidos completados</p>
     </div>
     
     <button class="btn logout-btn" onclick="logout()">CERRAR SESIÓN</button>
@@ -393,119 +414,161 @@
     
     <div class="dashboard-content">
       <h3>Productos Disponibles</h3>
-      <p>🍎 Manzanas Frescas - $50/kg</p>
-      <p>🥑 Aguacate - $80/kg</p>
-      <p>🍓 Fresas - $60/caja</p>
-      <p>🥕 Zanahorias - $30/kg</p>
+      <p>🍎 Manzanas Criollas</p>
+      <p>🍑 Duraznos Frescos</p>
+      <p>🍋 Limones</p>
+      <p>🌰 Nueces de Castilla</p>
     </div>
     
     <div class="dashboard-content">
       <h3>Mis Pedidos</h3>
-      <p>📦 Tienes 2 pedidos en camino</p>
-      <p>✅ Último pedido entregado el 25/11/2025</p>
+      <p>📦 Consulta tus pedidos recientes</p>
+      <p>✅ Historial de compras</p>
     </div>
     
     <button class="btn logout-btn" onclick="logout()">CERRAR SESIÓN</button>
   </div>
 
   <script>
-    // Usuarios de prueba
-    const users = {
-      admin: { email: 'admin@freshharvest.com', password: 'admin123', name: 'Administrador' },
-      cliente: { email: 'cliente@ejemplo.com', password: 'cliente123', name: 'Juan Pérez' }
-    };
-
     function showAbout() {
       document.getElementById('aboutModal').style.display = 'block';
     }
 
     function showLogin() {
       document.getElementById('loginModal').style.display = 'block';
+      hideAlert('loginAlert');
     }
 
     function showRegister() {
       document.getElementById('registerModal').style.display = 'block';
+      hideAlert('registerAlert');
     }
 
     function showForgotPassword() {
       document.getElementById('forgotModal').style.display = 'block';
+      hideAlert('forgotAlert');
     }
 
     function closeModal(modalId) {
       document.getElementById(modalId).style.display = 'none';
     }
 
-    function login(event) {
+    function showAlert(alertId, message, type) {
+      const alert = document.getElementById(alertId);
+      alert.textContent = message;
+      alert.className = 'alert alert-' + type;
+      alert.style.display = 'block';
+    }
+
+    function hideAlert(alertId) {
+      const alert = document.getElementById(alertId);
+      alert.style.display = 'none';
+    }
+
+    async function login(event) {
       event.preventDefault();
       
       const userType = document.getElementById('userType').value;
       const email = document.getElementById('loginEmail').value;
       const password = document.getElementById('loginPassword').value;
+      const loginBtn = document.getElementById('loginBtn');
 
-      if (!userType) {
-        alert('Por favor selecciona el tipo de usuario');
-        return;
-      }
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'INGRESANDO...';
 
-      const user = users[userType];
-      
-      if (email === user.email && password === user.password) {
-        closeModal('loginModal');
-        document.getElementById('mainScreen').style.display = 'none';
-        
-        if (userType === 'admin') {
-          document.getElementById('adminName').textContent = user.name;
-          document.getElementById('adminDashboard').style.display = 'block';
+      try {
+        const formData = new FormData();
+        formData.append('email', email);
+        formData.append('password', password);
+        formData.append('userType', userType);
+
+        const response = await fetch('login.php', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          closeModal('loginModal');
+          document.getElementById('mainScreen').style.display = 'none';
+          
+          if (data.userType === 'admin') {
+            document.getElementById('adminName').textContent = data.userName;
+            document.getElementById('adminDashboard').style.display = 'block';
+          } else {
+            document.getElementById('clientName').textContent = data.userName;
+            document.getElementById('clientDashboard').style.display = 'block';
+          }
         } else {
-          document.getElementById('clientName').textContent = user.name;
-          document.getElementById('clientDashboard').style.display = 'block';
+          showAlert('loginAlert', data.message, 'error');
         }
-      } else {
-        alert('Correo o contraseña incorrectos');
+      } catch (error) {
+        showAlert('loginAlert', 'Error de conexión con el servidor', 'error');
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'INGRESAR';
       }
     }
 
-    function register(event) {
+    async function register(event) {
       event.preventDefault();
       
-      const name = document.getElementById('regName').value;
+      const nombre = document.getElementById('regName').value;
       const email = document.getElementById('regEmail').value;
+      const telefono = document.getElementById('regTelefono').value;
       const password = document.getElementById('regPassword').value;
       const confirmPassword = document.getElementById('regConfirmPassword').value;
+      const registerBtn = document.getElementById('registerBtn');
 
-      if (password !== confirmPassword) {
-        alert('Las contraseñas no coinciden');
-        return;
+      registerBtn.disabled = true;
+      registerBtn.textContent = 'REGISTRANDO...';
+
+      try {
+        const formData = new FormData();
+        formData.append('nombre', nombre);
+        formData.append('email', email);
+        formData.append('telefono', telefono);
+        formData.append('password', password);
+        formData.append('confirmPassword', confirmPassword);
+
+        const response = await fetch('register.php', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showAlert('registerAlert', '¡Cuenta creada exitosamente! Ya puedes iniciar sesión.', 'success');
+          setTimeout(() => {
+            closeModal('registerModal');
+            showLogin();
+          }, 2000);
+        } else {
+          showAlert('registerAlert', data.message, 'error');
+        }
+      } catch (error) {
+        showAlert('registerAlert', 'Error de conexión con el servidor', 'error');
+      } finally {
+        registerBtn.disabled = false;
+        registerBtn.textContent = 'REGISTRARSE';
       }
-
-      if (password.length < 6) {
-        alert('La contraseña debe tener al menos 6 caracteres');
-        return;
-      }
-
-      alert('¡Cuenta creada exitosamente!\n\nPuedes iniciar sesión con:\nCorreo: cliente@ejemplo.com\nContraseña: cliente123');
-      closeModal('registerModal');
-      showLogin();
     }
 
     function forgotPassword(event) {
       event.preventDefault();
       const email = document.getElementById('forgotEmail').value;
-      alert('Se ha enviado un enlace de recuperación a: ' + email);
-      closeModal('forgotModal');
+      showAlert('forgotAlert', 'Se ha enviado un enlace de recuperación a: ' + email, 'success');
+      setTimeout(() => {
+        closeModal('forgotModal');
+      }, 2000);
     }
 
     function logout() {
-      document.getElementById('adminDashboard').style.display = 'none';
-      document.getElementById('clientDashboard').style.display = 'none';
-      document.getElementById('mainScreen').style.display = 'block';
-      
-      document.getElementById('loginEmail').value = '';
-      document.getElementById('loginPassword').value = '';
-      document.getElementById('userType').value = '';
+      window.location.href = 'logout.php';
     }
 
-    // Cerrar modal al hacer clic fuera de él
     window.onclick = function(event) {
       const modals = document.getElementsByClassName('modal');
       for (let modal of modals) {
